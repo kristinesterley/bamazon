@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 	password: "root",
 	database: "Bamazon"
 });
-console.log("something");
+
 inquirer.prompt({
       name: "choice",
       type: "rawlist",
