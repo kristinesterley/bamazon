@@ -39,7 +39,7 @@ function processBuyRequest(itemId, requestQuantity){
 
 function start() {
 	connection.query("SELECT item_id, product_name, price FROM products", function(err,res){		
-		console.table([ 'ID', 'Product', 'Price'], res);
+		console.table(res);
 
 	  	inquirer.prompt([{
 	    	name: "item",
