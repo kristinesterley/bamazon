@@ -31,6 +31,8 @@ function processBuyRequest(itemId, requestQuantity){
 				item_id: itemId
 			}], function(err, res){
 				console.log("Order Filled! Your purchase total: $" + total_cost);
+
+				// now update the departments table to reflect this sale.
 				//get the total sales for the current department
 				var query = "SELECT total_sales FROM departments WHERE department_name = '" + dept + "'";
 				connection.query(query, function(err,result){
@@ -45,7 +47,6 @@ function processBuyRequest(itemId, requestQuantity){
 						},{
 						department_name: dept
 					}], function(err,res){
-						console.log("total sales update in department table");
 						connection.end();
 					});
 				});
@@ -57,9 +58,10 @@ function processBuyRequest(itemId, requestQuantity){
 
 
 function start() {
+	// display the prodcuts available to purchase
 	connection.query("SELECT item_id, product_name, price FROM products", function(err,res){		
 		console.table(res);
-
+	// ask customer what they would like to purchase and how many
 	  	inquirer.prompt([{
 	    	name: "item",
 	    	type: "input",
@@ -69,6 +71,7 @@ function start() {
 	    	type: "input",
 	    	message: "How many would you like to buy?"
 	  	}]).then(function(answer) {
+	  		//process the requested purchase
 	  		processBuyRequest(answer.item, answer.quantity);
   			});
 	});	

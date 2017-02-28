@@ -83,26 +83,34 @@ inquirer.prompt({
 				  	type: "input",
 				  	message: "Quantity:"
 				  
-				    // validate: function(value) {
-				    //   if (isNaN(value) === false) {
-				    //     return true;
-				    //   }
-				    //   return false;
-				    // }
+
 				  }]).then(function(answer) {
-				    connection.query("INSERT INTO products SET ?", {
-				      product_name: answer.item,
-				      department_name: answer.department,
-				      price: answer.price,
-				      stock_quantity: answer.quantity
-				    }, function(err, res) {
-				      console.log("Product created successfully!");
-				      connection.end();
-				    });
+
+	  					//check to see if the department specified is in the departments table - if it is proceed, otherwise tell them to get
+	  					// a supervisor to add the new department
+	  					connection.query("SELECT * FROM departments WHERE department_name = '" + answer.department + "'", function(err, res){
+	  						if (res.length > 0 ){
+	  							connection.query("INSERT INTO products SET ?", {
+				      			product_name: answer.item,
+				      			department_name: answer.department,
+				      			price: answer.price,
+				      			stock_quantity: answer.quantity
+				    			}, function(err, res) {
+				      				console.log("Product created successfully!");
+				     				connection.end();
+				    			});
+	  						}
+	  						else {
+	  							console.log("Invalid Department. See your Supervisor to add a new department.");
+	  							connection.end();
+	  						}
+
+	  					});
 				  });
 
     			break;
     		default:
     			console.log("Invalid choice.");
+    			connection.end();
     	}//end switch
     });
